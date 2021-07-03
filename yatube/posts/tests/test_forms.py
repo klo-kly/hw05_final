@@ -12,6 +12,8 @@ from ..models import Group, Post
 User = get_user_model()
 
 MEDIA_ROOT = tempfile.mkdtemp(dir=settings.BASE_DIR)
+
+
 @override_settings(MEDIA_ROOT=MEDIA_ROOT)
 class PostFormTests(TestCase):
     @classmethod

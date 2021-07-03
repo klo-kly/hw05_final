@@ -10,7 +10,6 @@ from .forms import PostForm, CommentForm
 User = get_user_model()
 
 
-
 def index(request):
     post_list = Post.objects.all()
     paginator = Paginator(post_list, 10)
@@ -40,11 +39,13 @@ def profile(request, username):
     page = paginator.get_page(page_number)
     following = False
     if request.user.is_authenticated:
-        if Follow.objects.filter(author__following__user=request.user).exists():
+        if Follow.objects.filter(
+            author__following__user=request.user
+        ).exists():
             following = True
     return render(request, 'profile.html', {'author': author,
-                                            'page': page, 
-                                            'posts_count': posts_count, 
+                                            'page': page,
+                                            'posts_count': posts_count,
                                             'following': following}
                   )
 
@@ -63,30 +64,37 @@ def post_view(request, username, post_id):
                                          'form': form}
                   )
 
+
 @login_required
 def post_edit(request, username, post_id):
     edit_post = get_object_or_404(Post, pk=post_id)
-    form = PostForm(request.POST or None, files=request.FILES or None, instance=edit_post)
+    form = PostForm(request.POST or None,
+                    files=request.FILES or None,
+                    instance=edit_post
+                    )
     if edit_post.author != request.user:
         return redirect('post', username, edit_post.pk)
     if form.is_valid():
         form.save()
         return redirect('post', username, edit_post.pk)
-    context = {'form': form, 'is_edit': True, 'post_id': post_id, 'edit_post': edit_post}
+    context = {'form': form, 'is_edit': True,
+               'post_id': post_id, 'edit_post': edit_post
+               }
     return render(request, 'new_post.html', context)
 
+
 def page_not_found(request, exception):
-    # Переменная exception содержит отладочную информацию, 
-    # выводить её в шаблон пользователской страницы 404 мы не станем
     return render(
-        request, 
-        "misc/404.html", 
-        {"path": request.path}, 
+        request,
+        "misc/404.html",
+        {"path": request.path},
         status=404
     )
 
+
 def server_error(request):
     return render(request, "misc/500.html", status=500)
+
 
 @login_required
 def add_comment(request, username, post_id):
@@ -99,6 +107,7 @@ def add_comment(request, username, post_id):
         comment.save()
     return redirect('post', username, post_id)
 
+
 @login_required
 def new_post(request):
     form = PostForm(request.POST or None, files=request.FILES or None)
@@ -110,6 +119,7 @@ def new_post(request):
     return render(request, 'new_post.html', {'form': form,
                                              'is_edit': False})
 
+
 @login_required
 def follow_index(request):
     post_list = Post.objects.filter(author__following__user=request.user)
@@ -117,6 +127,7 @@ def follow_index(request):
     page_number = request.GET.get('page')
     page = paginator.get_page(page_number)
     return render(request, "follow.html", {'page': page})
+
 
 @login_required
 def profile_follow(request, username):

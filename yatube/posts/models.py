@@ -22,7 +22,7 @@ class Group(models.Model):
 class Post(models.Model):
     class Meta:
         ordering = ["-pub_date"]
- 
+
     group = models.ForeignKey(
         Group, null=True, blank=True,
         verbose_name="Сообщество", related_name="posts",
@@ -42,6 +42,7 @@ class Post(models.Model):
     def __str__(self):
         return self.text[:15]
 
+
 class Comment(models.Model):
     post = models.ForeignKey(
         Post, related_name="comments",
@@ -58,7 +59,8 @@ class Comment(models.Model):
 
     def __str__(self):
         return self.title
-    
+
+
 class Follow(models.Model):
     user = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name="follower"

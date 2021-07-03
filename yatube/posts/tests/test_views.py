@@ -6,7 +6,7 @@ import time
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core.files.uploadedfile import SimpleUploadedFile
-from django.test import Client, TestCase, override_settings
+from django.test import Client, TestCase
 from django.urls import reverse
 from django import forms
 
@@ -100,7 +100,10 @@ class PostsPagesTests(TestCase):
 
     def test_profile_show_correct_context(self):
         """Шаблон profile сформирован с правильным контекстом."""
-        response = self.guest_client.get(reverse('profile', kwargs={'username': self.user}))
+        response = self.guest_client.get(reverse('profile',
+                                                 kwargs={'username': self.user}
+                                                 )
+                                         )
         self.assertEqual(response.context.get('page').object_list[1].text,
                          self.post.text)
         self.assertEqual(response.context['page'].object_list[1].image,
@@ -109,7 +112,14 @@ class PostsPagesTests(TestCase):
     def test_post_show_correct_context(self):
         """Шаблон post сформирован с правильным контекстом."""
         response = self.guest_client.get(
-            reverse('post', kwargs={'username': self.user, 'post_id': self.post.id}))
+            reverse(
+                'post',
+                kwargs={
+                    'username': self.user,
+                    'post_id': self.post.id
+                }
+            )
+        )
         self.assertEqual(response.context['post'].image,
                          self.post.image)
 
@@ -150,6 +160,7 @@ class PostsPagesTests(TestCase):
         index_page_cash = response.context.get('page')
         self.assertEqual(index_page, index_page_cash)
 
+
 class PaginatorViewsTest(TestCase):
     @classmethod
     def setUpClass(cls):
@@ -171,6 +182,7 @@ class PaginatorViewsTest(TestCase):
             reverse('index') + '?page=2'
         )
         self.assertEqual(len(response.context.get('page').object_list), 5)
+
 
 class FollowTest(TestCase):
     @classmethod
@@ -194,7 +206,8 @@ class FollowTest(TestCase):
         self.authorized_client_2.force_login(FollowTest.author_2)
 
     def test_user_can_follow_author(self):
-        """Авторизованный пользователь может подписываться на других пользователей."""
+        """Авторизованный пользователь может
+        подписываться на других пользователей."""
         if not Follow.objects.filter(author=FollowTest.author_2,
                                      user=FollowTest.follower).exists():
             self.authorized_client_1.get(reverse(
@@ -204,7 +217,8 @@ class FollowTest(TestCase):
                          FollowTest.author_2)
 
     def test_user_can_unfollow_author(self):
-        """Авторизованный пользователь может удалять других пользователей из подписок."""
+        """Авторизованный пользователь может
+        удалять других пользователей из подписок."""
         if Follow.objects.filter(author=FollowTest.author_2,
                                  user=FollowTest.follower).exists():
             self.authorized_client_1.get(
@@ -214,16 +228,19 @@ class FollowTest(TestCase):
             user=FollowTest.follower, author=FollowTest.author_2).exists())
 
     def new_post_appears_tape_follower(self):
-        """Новая запись пользователя появляется в ленте тех, кто на него подписан."""
+        """Новая запись пользователя появляется в ленте тех,
+        кто на него подписан."""
         response = self.authorized_client_1.get(reverse('follow_index'))
         self.assertEqual(response.context.get('page')[0].author_1,
                          FollowTest.author_1)
 
     def new_post_not_appears_tape_not_follower(self):
-        """Новая запись пользователя не появляется в ленте тех, кто не подписан на него."""
+        """Новая запись пользователя не появляется в ленте тех,
+        кто не подписан на него."""
         response = self.authorized_client_1.get(reverse('follow_index'))
         self.assertEqual(response.context.get('page')[0].author_1,
                          FollowTest.author_1)
+
 
 class CommentTest(TestCase):
     @classmethod
@@ -246,7 +263,7 @@ class CommentTest(TestCase):
         """Не авторизированный пользователь не может комментировать посты."""
         response = self.guest_client.post(reverse(
             'add_comment', args=[CommentTest.author.username,
-                                       CommentTest.post.id]))
+                                 CommentTest.post.id]))
         self.assertRedirects(response, reverse(
             'posts:post', args=[CommentTest.author.username,
                                 CommentTest.post.id]))
@@ -254,8 +271,8 @@ class CommentTest(TestCase):
     def authorized_user_can_comment(self):
         """Только авторизированный пользователь может комментировать посты."""
         self.authorized_client.post(reverse(
-            'add_comment', args=[CommentTest.author.username,
-                                       CommentTest.post.id]),
-                                    data=self.form_data, follow=True)
+            'add_comment',
+            args=[CommentTest.author.username, CommentTest.post.id]),
+            data=self.form_data, follow=True)
         self.assertTrue(
             Comment.objects.filter(post='Тестовый комментарий').exists())
