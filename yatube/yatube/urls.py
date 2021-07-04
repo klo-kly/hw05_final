@@ -1,4 +1,4 @@
-"""yatube URL Configuration
+'''yatube URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/2.2/topics/http/urls/
@@ -12,15 +12,15 @@ Class-based views
 Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
-"""
+'''
 from django.conf import settings
 from django.conf.urls.static import static
 from django.conf.urls import handler404, handler500
 from django.contrib import admin
 from django.urls import include, path
 
-handler404 = "posts.views.page_not_found"  # noqa
-handler500 = "posts.views.server_error"  # noqa
+handler404 = 'posts.views.page_not_found'  # noqa
+handler500 = 'posts.views.server_error'  # noqa
 
 urlpatterns = [
     path('auth/', include('users.urls')),

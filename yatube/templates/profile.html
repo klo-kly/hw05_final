@@ -16,6 +16,7 @@
       </div>
     </div>
   </main>
+{% if user.username != author.username %}
   <li class="list-group-item">
   {% if following %}
     <a
@@ -31,4 +32,5 @@
     </a>
   {% endif %}
 </li>
+{% endif %}
 {% endblock %} 

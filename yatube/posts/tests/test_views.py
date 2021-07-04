@@ -216,6 +216,18 @@ class FollowTest(TestCase):
                                             author=FollowTest.author_2).author,
                          FollowTest.author_2)
 
+    def test_user_cant_follow_author(self):
+        """Неавторизованный не может
+        подписываться на других пользователей."""
+        if not Follow.objects.filter(author=FollowTest.author_2,
+                                     user=FollowTest.follower).exists():
+            self.guest_client.get(reverse(
+                'profile_follow', args=[FollowTest.author_2.username]))
+        self.assertFalse(
+            Follow.objects.filter(user=FollowTest.follower,
+                                  author=FollowTest.author_2).exists()
+        )
+
     def test_user_can_unfollow_author(self):
         """Авторизованный пользователь может
         удалять других пользователей из подписок."""
@@ -252,6 +264,11 @@ class CommentTest(TestCase):
             author=cls.author,
             text='Тестовый текст',
         )
+        cls.comment = Comment.objects.create(
+            post=cls.post,
+            author=cls.author,
+            text='Тестовый комментарий'
+        )
 
     def setUp(self):
         self.guest_client = Client()
@@ -265,8 +282,8 @@ class CommentTest(TestCase):
             'add_comment', args=[CommentTest.author.username,
                                  CommentTest.post.id]))
         self.assertRedirects(response, reverse(
-            'posts:post', args=[CommentTest.author.username,
-                                CommentTest.post.id]))
+            'post', args=[CommentTest.author.username,
+                          CommentTest.post.id]))
 
     def authorized_user_can_comment(self):
         """Только авторизированный пользователь может комментировать посты."""
@@ -276,3 +293,9 @@ class CommentTest(TestCase):
             data=self.form_data, follow=True)
         self.assertTrue(
             Comment.objects.filter(post='Тестовый комментарий').exists())
+        self.assertTrue(
+            Comment.objects.get(post='Тестовый комментарий').text,
+            CommentTest.comment.text)
+        self.assertTrue(
+            Comment.objects.get(post='Тестовый комментарий').author,
+            CommentTest.comment.author)
