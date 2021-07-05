@@ -3,32 +3,36 @@
 {% block title %}Что применялось при разработе?{% endblock %}
 {% block content %}
   <div class="row">
-    <!-- Левый вспомогательный блок -->
-    <div class="col-md-3 mb-3 mt-1">
-      <div class="card">
-        <div class="card-body">
-          <ul class="list-group list-group-flush">
-            <li class="list-group-item">
-              <div class="h3">
-                Что применялось при разработе?
-              </div>
-            </li>
-            <li class="list-group-item">
-              <div class="h6 text-muted">
-                Полезный короткий текст
-              </div>
-            </li>
-          </ul>
-        </div>
-      </div>
+<div id="main">
+
+<article class="post">
+  <header>
+    <div class="title">
+      <h2>О проекте</h2>
     </div>
-    <!-- Тело страницы -->
-    <div class="col-md-9">
-      <div class="card-body">
-        <div class="card-text">
-          <p>Текст страницы "Технологии"</p>
-        </div>
-      </div>
+  </header>
+
+  <div style="font-family: Raleway, Helvetica, sans-serif; letter-spacing: 0.03em;">
+    <p>Платформа Yatube создана в качестве учебного проекта на курсе Яндекс Практикума <a href="https://praktikum.yandex.ru/backend-developer">"Python-разработчик"</a>.</p>
+    <p>Разработано на Django с использованием SQLite.</p>
+    <p>Зарегистрировавшись, здесь можно:
+        </p><ul>
+            <li>Читать посты других авторов и сообществ</li>
+            <li>Создавать и редактировать посты</li>
+            <li>Оставлять комментарии</li>
+            <li>Подписываться на авторов</li>
+            <li>Искать и находить баги)</li>
+        </ul>
+    <p></p>
+    <p>Буду признателен за любую активность и добро пожаловать!</p>
+  </div>
+
+
+  
+
+</article>
+
+        
     </div>
   </div>
 {% endblock %}

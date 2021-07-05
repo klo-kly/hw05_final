@@ -57,9 +57,6 @@ class Comment(models.Model):
         auto_now_add=True, verbose_name="Дата комментария"
     )
 
-    def __str__(self):
-        return self.title
-
 
 class Follow(models.Model):
     user = models.ForeignKey(
